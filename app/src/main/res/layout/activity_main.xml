@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.xililab.apdf.presentation.PDFDisplayViewModel" />
+    </data>
+
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.xililab.apdf.presentation.MainActivity">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pdf_view"
+        android:orientation="horizontal"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        bind:pdf="@{viewModel.pdfRepository}"
+        >
+
+    </android.support.v7.widget.RecyclerView>
+
+</android.support.constraint.ConstraintLayout>
+</layout>
