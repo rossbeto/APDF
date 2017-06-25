@@ -20,13 +20,14 @@ import java.io.InputStream;
 //https://developer.android.com/studio/intro/keyboard-shortcuts.html
 public class MainActivity extends AppCompatActivity
 {
-    ActivityMainBinding binding;
+    private ActivityMainBinding binding;
+    private IPDFReaderRepository pdfReaderRepository;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        IPDFReaderRepository pdfReaderRepository = new PDFReaderRepository(createParcelFileDescriptor(this));
+        pdfReaderRepository = new PDFReaderRepository(createParcelFileDescriptor(this));
 
         PDFDisplayViewModel viewModel = new PDFDisplayViewModel();
         binding.setViewModel(viewModel);
@@ -35,6 +36,13 @@ public class MainActivity extends AppCompatActivity
      //   RecyclerView recyclerView = binding.pdfView;
 
       //  recyclerView.setAdapter(new PDFRecyclerAdapter(pdfReaderRepository));
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        this.pdfReaderRepository.closePDFReader();
     }
 
     private ParcelFileDescriptor createParcelFileDescriptor(Context context)

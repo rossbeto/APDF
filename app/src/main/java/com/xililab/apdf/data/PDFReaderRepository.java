@@ -55,4 +55,18 @@ public class PDFReaderRepository implements IPDFReaderRepository
         }
         return 0;
     }
+
+    @Override
+    public void closePDFReader()
+    {
+        try
+        {
+            if(this.pdfRenderer != null) pdfRenderer.close();
+            if(parcelFileDescriptor != null) parcelFileDescriptor.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }
