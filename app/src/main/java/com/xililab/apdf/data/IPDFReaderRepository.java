@@ -2,14 +2,17 @@ package com.xililab.apdf.data;
 
 import android.graphics.Bitmap;
 
+import rx.Observable;
+
+
 /**
  * Created by xililab on 24/06/17.
  */
 
 public interface IPDFReaderRepository
 {
-    IPDFReaderRepository openPDFReaderRepository();
-    Bitmap getBitmap(int position);
+    Observable<IPDFReaderRepository> openPDFReaderRepository();
+    Observable<Bitmap> getBitmap(int position);
     int getPageCount();
-    void closePDFReader();
+    Void closePDFReader();
 }

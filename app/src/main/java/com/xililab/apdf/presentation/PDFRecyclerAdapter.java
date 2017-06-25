@@ -36,9 +36,19 @@ public class PDFRecyclerAdapter extends RecyclerView.Adapter<PDFRecyclerAdapter.
     {
         if(this.pdfReaderRepository != null)
         {
-            Bitmap pdfPageBitmap = this.pdfReaderRepository.getBitmap(position);
-            holder.binder.pdfPage.setImageBitmap(pdfPageBitmap);
-            holder.binder.executePendingBindings();
+            this.pdfReaderRepository.getBitmap(position).subscribe((Bitmap bitmap) -> {
+                holder.binder.pdfPage.setImageBitmap(bitmap);
+                holder.binder.executePendingBindings();
+            });
+
+//            this.pdfReaderRepository.getBitmap(position)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(Subscribers.create(
+//                    (Bitmap bitmap) -> {
+//                        holder.binder.pdfPage.setImageBitmap(bitmap);
+//                        holder.binder.executePendingBindings();
+//                    }));
         }
     }
 

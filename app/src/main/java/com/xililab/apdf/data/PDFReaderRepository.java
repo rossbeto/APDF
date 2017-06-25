@@ -5,6 +5,7 @@ import android.graphics.pdf.PdfRenderer;
 import android.os.ParcelFileDescriptor;
 
 import java.io.IOException;
+import rx.Observable;
 
 /**
  * Created by xililab on 24/06/17.
@@ -21,7 +22,7 @@ public class PDFReaderRepository implements IPDFReaderRepository
     }
 
     @Override
-    public IPDFReaderRepository openPDFReaderRepository()
+    public Observable<IPDFReaderRepository> openPDFReaderRepository()
     {
         try
         {
@@ -32,18 +33,18 @@ public class PDFReaderRepository implements IPDFReaderRepository
             e.printStackTrace();
         }
 
-        return this;
+        return Observable.just(this);
     }
 
     @Override
-    public Bitmap getBitmap(int position)
+    public Observable<Bitmap> getBitmap(int position)
     {
         PdfRenderer.Page page = pdfRenderer.openPage(position);
         Bitmap bitmap = Bitmap.createBitmap(page.getWidth(), page.getHeight(),
                 Bitmap.Config.ARGB_8888);
         page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
         page.close();
-        return bitmap;
+        return Observable.just(bitmap);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class PDFReaderRepository implements IPDFReaderRepository
     }
 
     @Override
-    public void closePDFReader()
+    public Void closePDFReader()
     {
         try
         {
@@ -68,5 +69,7 @@ public class PDFReaderRepository implements IPDFReaderRepository
         {
             e.printStackTrace();
         }
+
+        return null;
     }
 }

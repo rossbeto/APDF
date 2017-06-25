@@ -10,11 +10,17 @@ import com.xililab.apdf.R;
 import com.xililab.apdf.data.IPDFReaderRepository;
 import com.xililab.apdf.data.PDFReaderRepository;
 import com.xililab.apdf.databinding.ActivityMainBinding;
+import com.xililab.apdf.domain.ClosePDFTask;
+import com.xililab.apdf.domain.OpenPDFTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.Subscribers;
+import rx.schedulers.Schedulers;
 
 
 //https://developer.android.com/studio/intro/keyboard-shortcuts.html
@@ -22,6 +28,7 @@ public class MainActivity extends AppCompatActivity
 {
     private ActivityMainBinding binding;
     private IPDFReaderRepository pdfReaderRepository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -31,18 +38,33 @@ public class MainActivity extends AppCompatActivity
 
         PDFDisplayViewModel viewModel = new PDFDisplayViewModel();
         binding.setViewModel(viewModel);
-        pdfReaderRepository.openPDFReaderRepository();
-        viewModel.setPdfRepository(pdfReaderRepository);
-     //   RecyclerView recyclerView = binding.pdfView;
 
-      //  recyclerView.setAdapter(new PDFRecyclerAdapter(pdfReaderRepository));
+        OpenPDFTask openPDFTask = new OpenPDFTask(Schedulers.io(), AndroidSchedulers.mainThread(), this.pdfReaderRepository);
+
+        openPDFTask.execute(Subscribers.create(
+                (IPDFReaderRepository readerRepository) -> {
+                    viewModel.setPdfRepository(pdfReaderRepository);
+                }
+        ));
     }
 
     @Override
     protected void onStop()
     {
+
         super.onStop();
-        this.pdfReaderRepository.closePDFReader();
+
+//        closePDFTask.execute(Subscribers.create((Void)->{
+//            super.onStop();
+//        }));
+    }
+
+    @Override
+    protected  void onDestroy()
+    {
+        ClosePDFTask closePDFTask = new ClosePDFTask(Schedulers.io(), AndroidSchedulers.mainThread(), this.pdfReaderRepository);
+        closePDFTask.execute(Subscribers.empty());
+        super.onDestroy();
     }
 
     private ParcelFileDescriptor createParcelFileDescriptor(Context context)
